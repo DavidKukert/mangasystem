@@ -3,10 +3,18 @@ import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import User from 'App/Models/User'
 
 export default class UsersController {
-    protected userSchema = schema.create({
-        nickname: schema.string([rules.unique({ table: 'users', column: 'nickname' })]),
-        password: schema.string([rules.confirmed(), rules.minLength(4), rules.maxLength(12)]),
-    })
+    protected userSchema(id: string | null = null) {
+        return schema.create({
+            nickname: schema.string([
+                rules.unique({
+                    table: 'users',
+                    column: 'nickname',
+                    whereNot: { id },
+                }),
+            ]),
+            password: schema.string([rules.confirmed(), rules.minLength(4), rules.maxLength(12)]),
+        })
+    }
 
     public async index(ctx: HttpContextContract) {
         const users = await User.query()
@@ -20,6 +28,8 @@ export default class UsersController {
 
             const user = await User.findOrFail(id)
 
+            await user.load('profile')
+
             return ctx.response.json(user)
         } catch (error) {
             return ctx.response.status(400).json(error)
@@ -29,7 +39,7 @@ export default class UsersController {
     public async store(ctx: HttpContextContract) {
         try {
             const payload = await ctx.request.validate({
-                schema: this.userSchema,
+                schema: this.userSchema(),
             })
 
             const user = await User.create(payload)
@@ -50,7 +60,7 @@ export default class UsersController {
         try {
             const id = ctx.params.id
             const payload = await ctx.request.validate({
-                schema: this.userSchema,
+                schema: this.userSchema(id),
             })
 
             const user = await User.findOrFail(id)
@@ -77,7 +87,6 @@ export default class UsersController {
             if (user.$isDeleted)
                 return ctx.response.status(201).json({
                     msg: 'Usuário deletado com sucesso!',
-                    user,
                 })
         } catch (error) {}
     }

@@ -24,4 +24,16 @@ Route.get('/', async () => {
     return { hello: 'world' }
 })
 
-Route.resource('users', 'UsersController').apiOnly()
+Route.resource('users', 'UsersController')
+    .apiOnly()
+    .middleware({
+        update: ['auth:api'],
+        destroy: ['auth:api'],
+    })
+
+Route.resource('users.profiles', 'ProfilesController')
+    .only(['store', 'update'])
+    .middleware({ '*': ['auth:api'] })
+
+Route.post('login', 'SessionsController.login')
+Route.delete('logout', 'SessionsController.logout').middleware('auth:api')
