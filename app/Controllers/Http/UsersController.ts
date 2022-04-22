@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import Role from 'App/Models/Role'
 import User from 'App/Models/User'
 
 export default class UsersController {
@@ -17,7 +18,7 @@ export default class UsersController {
     }
 
     public async index(ctx: HttpContextContract) {
-        const users = await User.query()
+        const users = await User.query().preload('roles')
 
         return ctx.response.json(users)
     }
@@ -46,11 +47,19 @@ export default class UsersController {
             await user.save()
             await user.refresh()
 
-            if (user.$isPersisted)
+            if (user.$isPersisted) {
+                const role = await Role.firstOrCreate(
+                    { roleName: 'user' },
+                    { roleDescription: 'Usuário' }
+                )
+
+                await user.related('roles').attach([role.id])
+
                 return ctx.response.status(201).json({
                     msg: 'Usuário criado com sucesso!',
                     user,
                 })
+            }
         } catch (error) {
             return ctx.response.status(400).json(error.messages)
         }
@@ -59,6 +68,11 @@ export default class UsersController {
     public async update(ctx: HttpContextContract) {
         try {
             const id = ctx.params.id
+
+            if (await ctx.bouncer.with('UserPolicy').denies('update', id)) {
+                return ctx.response.unauthorized()
+            }
+
             const payload = await ctx.request.validate({
                 schema: this.userSchema(id),
             })
@@ -81,6 +95,10 @@ export default class UsersController {
         try {
             const id = ctx.params.id
 
+            if (await ctx.bouncer.with('UserPolicy').denies('delete', id)) {
+                return ctx.response.unauthorized()
+            }
+
             const user = await User.findOrFail(id)
             await user.delete()
 
@@ -88,6 +106,8 @@ export default class UsersController {
                 return ctx.response.status(201).json({
                     msg: 'Usuário deletado com sucesso!',
                 })
-        } catch (error) {}
+        } catch (error) {
+            return ctx.response.status(400).json(error)
+        }
     }
 }
