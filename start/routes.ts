@@ -46,6 +46,13 @@ Route.resource('roles', 'RolesController')
 Route.post('roles/:id/users', 'RolesController.addUsers').middleware('auth:api')
 Route.delete('roles/:id/users', 'RolesController.removeUsers').middleware('auth:api')
 
+// Permissions Routes
+Route.resource('permissions', 'PermissionsController')
+    .apiOnly()
+    .middleware({
+        '*': ['auth:api'],
+    })
+
 // session routes
 Route.post('login', 'SessionsController.login')
 Route.delete('logout', 'SessionsController.logout').middleware('auth:api')

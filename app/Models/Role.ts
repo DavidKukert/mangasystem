@@ -2,6 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, beforeCreate, column, manyToMany, ManyToMany } from '@ioc:Adonis/Lucid/Orm'
 import { v4 as uuidv4 } from 'uuid'
 import User from 'App/Models/User'
+import Permission from 'App/Models/Permission'
 
 export default class Role extends BaseModel {
     public static selfAssignPrimaryKey = true
@@ -23,6 +24,9 @@ export default class Role extends BaseModel {
 
     @manyToMany(() => User)
     public users: ManyToMany<typeof User>
+
+    @manyToMany(() => Permission)
+    public permissions: ManyToMany<typeof Permission>
 
     @beforeCreate()
     public static async assignUuid(role: Role) {
