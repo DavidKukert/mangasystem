@@ -45,6 +45,8 @@ Route.resource('roles', 'RolesController')
     })
 Route.post('roles/:id/users', 'RolesController.addUsers').middleware('auth:api')
 Route.delete('roles/:id/users', 'RolesController.removeUsers').middleware('auth:api')
+Route.post('roles/:id/permissions', 'RolesController.addPermissions').middleware('auth:api')
+Route.delete('roles/:id/permissions', 'RolesController.removePermissions').middleware('auth:api')
 
 // Permissions Routes
 Route.resource('permissions', 'PermissionsController')

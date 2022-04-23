@@ -22,6 +22,12 @@ export default class RolesController {
         })
     }
 
+    protected rolePermissionsSchema() {
+        return schema.create({
+            permissionsIds: schema.array().members(schema.string()),
+        })
+    }
+
     public async index(ctx: HttpContextContract) {
         if (await ctx.bouncer.with('RolePolicy').denies('before')) {
             return ctx.response.unauthorized()
@@ -148,5 +154,37 @@ export default class RolesController {
         await role.related('users').detach(payload.usersIds)
 
         return ctx.response.json({ msg: 'Cargo removido com sucesso do(s) usuário(s)!' })
+    }
+
+    public async addPermissions(ctx: HttpContextContract) {
+        if (await ctx.bouncer.with('RolePolicy').denies('before')) {
+            return ctx.response.unauthorized()
+        }
+
+        const roleId = ctx.params.id
+
+        const payload = await ctx.request.validate({ schema: this.rolePermissionsSchema() })
+
+        const role = await Role.findOrFail(roleId)
+
+        await role.related('permissions').attach(payload.permissionsIds)
+
+        return ctx.response.json({ msg: 'Permissão(ões) add com sucesso ao cargo!' })
+    }
+
+    public async removePermissions(ctx: HttpContextContract) {
+        if (await ctx.bouncer.with('RolePolicy').denies('before')) {
+            return ctx.response.unauthorized()
+        }
+
+        const roleId = ctx.params.id
+
+        const payload = await ctx.request.validate({ schema: this.rolePermissionsSchema() })
+
+        const role = await Role.findOrFail(roleId)
+
+        await role.related('permissions').detach(payload.permissionsIds)
+
+        return ctx.response.json({ msg: 'Permissão(ões) removida(s) com sucesso do cargo!' })
     }
 }
