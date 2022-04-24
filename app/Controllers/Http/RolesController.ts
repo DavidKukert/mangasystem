@@ -33,7 +33,7 @@ export default class RolesController {
             return ctx.response.unauthorized()
         }
 
-        const roles = await Role.query()
+        const roles = await Role.query().preload('permissions')
 
         return ctx.response.json(roles)
     }
