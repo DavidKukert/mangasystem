@@ -107,6 +107,18 @@ const permissionsArray: PermissionsSeedData[] = [
         permissionName: 'destroy_permissions',
         permissionDescription: 'Destroy permissions',
     },
+    {
+        permissionName: 'store_series',
+        permissionDescription: 'Store Series',
+    },
+    {
+        permissionName: 'update_series',
+        permissionDescription: 'Update Series',
+    },
+    {
+        permissionName: 'destroy_series',
+        permissionDescription: 'Destroy Series',
+    },
 ]
 
 export default class PermissionSeeder extends BaseSeeder {

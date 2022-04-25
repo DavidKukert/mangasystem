@@ -69,7 +69,7 @@ export default class UsersController {
         try {
             const id = ctx.params.id
 
-            if (await ctx.bouncer.with('UserPolicy').denies('update', id)) {
+            if (await ctx.bouncer.with('UserPolicy').denies('accessControl', id)) {
                 return ctx.response.unauthorized()
             }
 
@@ -95,7 +95,7 @@ export default class UsersController {
         try {
             const id = ctx.params.id
 
-            if (await ctx.bouncer.with('UserPolicy').denies('delete', id)) {
+            if (await ctx.bouncer.with('UserPolicy').denies('accessControl', id)) {
                 return ctx.response.unauthorized()
             }
 

@@ -11,11 +11,7 @@ export default class UserPolicy extends BasePolicy {
         }
     }
 
-    public async update(user: User, id: string) {
-        return user.id === id
-    }
-
-    public async delete(user: User, id: string) {
+    public async accessControl(user: User, id: string) {
         return user.id === id
     }
 }

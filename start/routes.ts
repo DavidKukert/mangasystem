@@ -55,6 +55,15 @@ Route.resource('permissions', 'PermissionsController')
         '*': ['auth:api'],
     })
 
-// session routes
+// Session routes
 Route.post('login', 'SessionsController.login')
 Route.delete('logout', 'SessionsController.logout').middleware('auth:api')
+
+// Series routes
+Route.resource('series', 'SeriesController')
+    .apiOnly()
+    .middleware({
+        store: ['auth:api'],
+        update: ['auth:api'],
+        destroy: ['auth:api'],
+    })
