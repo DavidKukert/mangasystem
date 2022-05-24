@@ -67,3 +67,12 @@ Route.resource('series', 'SeriesController')
         update: ['auth:api'],
         destroy: ['auth:api'],
     })
+
+// Tags Routes
+Route.resource('tags', 'TagsController')
+    .apiOnly()
+    .middleware({
+        store: ['auth:api'],
+        update: ['auth:api'],
+        destroy: ['auth:api'],
+    })

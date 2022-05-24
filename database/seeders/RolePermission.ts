@@ -9,6 +9,16 @@ const permissionsUser = [
     'destroy_own_profile',
 ]
 
+const permissionsAuthor = [
+    'store_series',
+    'update_series',
+    'destroy_series',
+    'store_tags',
+    'update_tags',
+    'destroy_tags',
+    ...permissionsUser,
+]
+
 export default class RolePermissionSeeder extends BaseSeeder {
     public async run() {
         const roles = await Role.query()
@@ -24,6 +34,15 @@ export default class RolePermissionSeeder extends BaseSeeder {
                         permissions
                             .filter((perm) => {
                                 return permissionsUser.includes(perm.permissionName)
+                            })
+                            .map((perm) => perm.id)
+                    )
+                }
+                if (role.roleName === 'author') {
+                    await role.related('permissions').sync(
+                        permissions
+                            .filter((perm) => {
+                                return permissionsAuthor.includes(perm.permissionName)
                             })
                             .map((perm) => perm.id)
                     )

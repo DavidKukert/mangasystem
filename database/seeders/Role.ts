@@ -15,6 +15,10 @@ const rolesArray: RoleSeedData[] = [
         roleName: 'user',
         roleDescription: 'Users',
     },
+    {
+        roleName: 'author',
+        roleDescription: 'Authors',
+    },
 ]
 
 export default class RoleSeeder extends BaseSeeder {

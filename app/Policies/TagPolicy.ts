@@ -1,7 +1,7 @@
 import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
 import User from 'App/Models/User'
 
-export default class SeriePolicy extends BasePolicy {
+export default class TagPolicy extends BasePolicy {
     public async before(user: User | null) {
         if (user) {
             await user.load('roles')
@@ -10,7 +10,7 @@ export default class SeriePolicy extends BasePolicy {
             }
         }
     }
-    public async accessControl(user: User, permissionAllowed: SeriePermissions) {
+    public async accessControl(user: User, permissionAllowed: TagPermissions) {
         await user.load('roles', (roleQuery) => {
             roleQuery.preload('permissions')
         })

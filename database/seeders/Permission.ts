@@ -119,6 +119,18 @@ const permissionsArray: PermissionsSeedData[] = [
         permissionName: 'destroy_series',
         permissionDescription: 'Destroy Series',
     },
+    {
+        permissionName: 'store_tags',
+        permissionDescription: 'Store Series',
+    },
+    {
+        permissionName: 'update_tags',
+        permissionDescription: 'Update Series',
+    },
+    {
+        permissionName: 'destroy_tags',
+        permissionDescription: 'Destroy Series',
+    },
 ]
 
 export default class PermissionSeeder extends BaseSeeder {
@@ -132,7 +144,7 @@ export default class PermissionSeeder extends BaseSeeder {
                 )
             })
 
-            if (!permissionFiltered.length) {
+            if (permissionFiltered.length < 1) {
                 console.log('Permissions of the seed already exists!')
             }
 
